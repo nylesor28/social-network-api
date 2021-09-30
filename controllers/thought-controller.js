@@ -1,6 +1,29 @@
 const { Thought, User } = require('../models');
 
 const thoughtController = {
+
+  getAllThought(req, res) {
+    Thought.find({})
+      .select('-__v')
+      .then(dbThoughtData => res.json(dbThoughtData))
+        .catch(err => {
+          console.log(err);
+          res.sendStatus(400);
+        });
+  },
+
+
+  getThoughtById({ params }, res) {
+    console.log("PARAMS ID: ", params)
+    Thought.findOne({ _id: params.id })
+    //.select('-__v')
+      .then(dbThoughtData => res.json(dbThoughtData))
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(400);
+      });
+  },
+
   // add thought to user
   addThought({ params, body }, res) {
     console.log(body);
