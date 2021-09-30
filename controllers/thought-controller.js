@@ -1,4 +1,5 @@
 const { Thought, User } = require('../models');
+const {  Types  } = require('mongoose');
 
 const thoughtController = {
 
@@ -14,7 +15,6 @@ const thoughtController = {
 
 
   getThoughtById({ params }, res) {
-    console.log("PARAMS ID: ", params)
     Thought.findOne({ _id: params.id })
     //.select('-__v')
       .then(dbThoughtData => res.json(dbThoughtData))
@@ -25,15 +25,17 @@ const thoughtController = {
   },
 
   // add thought to user
-  addThought({ params, body }, res) {
-    console.log(body);
+  addThought({ body }, res) {
+    //console.log(body);
     Thought.create(body)
     .then(({ _id }) => {
+     if  (Types.ObjectId.isValid(body.userId)){
       return User.findOneAndUpdate(
-        { _id: params.userId },
+        { _id: body.userId },
         { $push: { thoughts: _id } },
         { new: true }
       );
+      }
     })
     .then(dbUserData => {
       if (!dbUserData) {
@@ -45,6 +47,17 @@ const thoughtController = {
     .catch(err => res.json(err));
   },
 
+  updateThought({ params, body }, res) {
+    Thought.findOneAndUpdate({ _id: params.id }, body, { new: true  })
+      .then(dbThoughtData => {
+        if (!dbThoughtData) {
+          res.status(404).json({ message: 'No thought found with this id!' });
+          return;
+        }
+        res.json(dbThoughtData);
+      })
+      .catch(err => res.status(400).json(err));
+  },
   addReaction({ params, body }, res) {
     Thought.findOneAndUpdate(
       { _id: params.thoughtId },
