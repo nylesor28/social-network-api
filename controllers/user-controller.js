@@ -1,4 +1,5 @@
 const { User } = require('../models');
+const {  Types  } = require('mongoose');
 
 const userController = {
   // get all users
@@ -14,9 +15,22 @@ const userController = {
 
 
   getUserById({ params }, res) {
-    User.findOne({ _id: params.id })
+    const userId = params.id ;
+
+    if  (!Types.ObjectId.isValid(userId)){
+      res.status(404).json({ message: 'No user found with this id!' });
+      return;
+    }
+
+    User.findOne({ _id: userId })
     //.select('-__v')
-      .then(dbUserData => res.json(dbUserData))
+    .then(dbUserData => {
+      if (!dbUserData) {
+        res.status(404).json({ message: 'No user found with this id!' });
+        return;
+      }
+      res.json(dbUserData);
+    })
       .catch(err => {
         console.log(err);
         res.sendStatus(400);
@@ -32,7 +46,15 @@ const userController = {
 
   // update user by id
   updateUser({ params, body }, res) {
-    User.findOneAndUpdate({ _id: params.id }, body, { new: true  })
+    const userId = params.id ;
+
+    if  (!Types.ObjectId.isValid(userId)){
+      res.status(404).json({ message: 'No user found with this id!' });
+      return;
+    }
+
+
+    User.findOneAndUpdate({ _id: userId}, body, { new: true, runValidators: true })
       .then(dbUserData => {
         if (!dbUserData) {
           res.status(404).json({ message: 'No user found with this id!' });
@@ -45,6 +67,13 @@ const userController = {
 
   // delete user
   deleteUser({ params }, res) {
+    const userId = params.id ;
+
+    if  (!Types.ObjectId.isValid(userId)){
+      res.status(404).json({ message: 'No user found with this id!' });
+      return;
+    }
+
     User.findOneAndDelete({ _id: params.id })
       .then(dbUserData => {
         if (!dbUserData) {
@@ -58,6 +87,15 @@ const userController = {
 
   addFriend({params}, res){
   
+    const userId = params.userId  ;
+    const friendId = params.friendId ;
+
+    if  (!Types.ObjectId.isValid(userId) ||
+        !Types.ObjectId.isValid(friendId) ){
+      res.status(404).json({ message: 'No user found with this id!' });
+      return;
+    }
+
     User.findOneAndUpdate(
       { _id: params.userId },
       { $push: { friends: params.friendId } },
@@ -77,7 +115,17 @@ const userController = {
   },
 
   removeFriend({params}, res){
+
   
+    const userId = params.userId  ;
+    const friendId = params.friendId ;
+
+    if  (!Types.ObjectId.isValid(userId) ||
+        !Types.ObjectId.isValid(friendId) ){
+      res.status(404).json({ message: 'No user found with this id!' });
+      return;
+    }
+
     User.findOneAndUpdate(
       { _id: params.userId },
       { $pull: { friends: params.friendId } },

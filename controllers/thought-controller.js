@@ -16,6 +16,10 @@ const thoughtController = {
 
   getThoughtById({ params }, res) {
 
+    if  (!Types.ObjectId.isValid(params.id )){
+      res.status(404).json({ message: 'No thought found with this id!' });
+      return;
+    }  
     Thought.findOne({ _id: params.id })
     //.select('-__v')
       .then(dbThoughtData => res.json(dbThoughtData))
@@ -49,6 +53,10 @@ const thoughtController = {
   },
 
   updateThought({ params, body }, res) {
+    if  (!Types.ObjectId.isValid(params.id )){
+      res.status(404).json({ message: 'No thought found with this id!' });
+      return;
+    } 
 
     Thought.findOneAndUpdate({ _id: params.id }, body, { new: true  })
       .then(dbThoughtData => {
@@ -62,6 +70,11 @@ const thoughtController = {
   },
   addReaction({ params, body }, res) {
   
+    if  (!Types.ObjectId.isValid(params.thoughtId )){
+      res.status(404).json({ message: 'No thought found with this id!' });
+      return;
+    } 
+
     Thought.findOneAndUpdate(
       { _id: params.thoughtId },
       { $push: { reactions: body } },
@@ -79,6 +92,11 @@ const thoughtController = {
   // remove reaction
   removeReaction({ params }, res) {
 
+    if  (!Types.ObjectId.isValid(params.thoughtId )){
+      res.status(404).json({ message: 'No thought found with this id!' });
+      return;
+    } 
+
     Thought.findOneAndUpdate(
       { _id: params.thoughtId },
       { $pull: { reactions: { _id: params.reactionId } } },
@@ -90,6 +108,11 @@ const thoughtController = {
 
   // remove thought
   removeThought({ params }, res) {
+    if  (!Types.ObjectId.isValid(params.id  )){
+      res.status(404).json({ message: 'No thought found with this id!' });
+      return;
+    } 
+
     Thought.findOneAndDelete({ _id: params.id })
       .then(deletedThought => {
         if (!deletedThought) {
