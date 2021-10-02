@@ -21,7 +21,11 @@ const thoughtController = {
       return;
     }  
     Thought.findOne({ _id: params.id })
-    //.select('-__v')
+    .populate({
+      path: 'reactions',
+      select: '-__v'
+    })
+    .select('-__v')
       .then(dbThoughtData => res.json(dbThoughtData))
       .catch(err => {
         console.log(err);
