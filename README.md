@@ -81,9 +81,9 @@ Use Insomnia for the following routes:
     DELETE http://localhost:3001/api/thoughts/:thoughtId/reactions
 
 ## ​Walkthough Videos
-Video Walkthrough (Start-up): 
-Video Walkthrough (User): 
-Video Walkthrough (Thoughts): 
+Video Walkthrough (Start-up): (https://drive.google.com/file/d/152aOl50deDJhyZB9XvDUQuquQPcuNwVM/view?usp=sharing) <br />  
+Video Walkthrough (User): (https://drive.google.com/file/d/1zwRurJ47lXfVON3xeivXVrtgIE4yIg0a/view?usp=sharing) <br />  
+Video Walkthrough (Thoughts): (https://drive.google.com/file/d/1lAIKYxsC6-RX3qrlZzhduucZLrEt0BHu/view?usp=sharing)
 
 
 
